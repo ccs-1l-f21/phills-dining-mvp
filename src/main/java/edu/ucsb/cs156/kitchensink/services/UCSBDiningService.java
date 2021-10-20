@@ -1,4 +1,4 @@
-package edu.ucsb.cs156.spring.backenddemo.services;
+package edu.ucsb.cs156.kitchensink.services;
 
 import java.util.List;
 import java.util.Map;
@@ -17,10 +17,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.beans.factory.annotation.Value;
+import java.util.Arrays;
+
 
 @Slf4j
 @Service
 public class UCSBDiningService {
+
+    @Value("${app.ucsb.api.consumer_key}")
+    private String apiKey;
+
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -33,10 +40,14 @@ public class UCSBDiningService {
     public static final String ENDPOINT = "https://api.ucsb.edu/dining/menu/v1/{date}";
 
     public String getDiningCommonsJSON(String date) throws HttpClientErrorException {
-        log.info("date={}", date);
+
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("ucsb-api-version", "1.0");
+        headers.set("ucsb-api-key", this.apiKey);
+
+        log.info("date={}", date);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
       
