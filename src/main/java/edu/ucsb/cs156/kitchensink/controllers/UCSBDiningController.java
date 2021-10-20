@@ -26,8 +26,6 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping("/api/dining")
 public class UCSBDiningController {
     
-    ObjectMapper mapper = new ObjectMapper();
-
     @Autowired
     UCSBDiningService ucsbDiningService;
 
@@ -40,5 +38,17 @@ public class UCSBDiningController {
         String result = ucsbDiningService.getDiningCommonsJSON(date);
         return ResponseEntity.ok().body(result);
     }
+
+    @ApiOperation(value = "Get list of meals for a dining commons on a given date.", 
+    notes = "JSON return format documented here: https://developer.ucsb.edu/apis/dining/dining-menu#/")
+    @GetMapping("/meals")
+    public ResponseEntity<String> getDiningCommonsMealsJSON(
+        @ApiParam("date in ISO format, e.g. 2021-10-04") @RequestParam String date,
+        @ApiParam("dining commons code, e.g. de-la-guerra") @RequestParam String diningCommonsCode
+    ) throws JsonProcessingException {
+        String result = ucsbDiningService.getDiningCommonsMealsJSON(date, diningCommonsCode);
+        return ResponseEntity.ok().body(result);
+    }
+
 
 }
